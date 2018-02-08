@@ -68,4 +68,11 @@ socket.on('state', state => {
     context.fill();
   });
 
+  state.bullets.forEach(bullet => {
+    context.fillStyle = black;
+    context.beginPath();
+    context.arc(bullet.x, bullet.y, 2, 0, 2 * Math.PI);
+    context.fill();
+  });
+
 });
