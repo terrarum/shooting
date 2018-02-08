@@ -45,7 +45,6 @@ document.addEventListener('keyup', event => {
   }
 });
 canvas.addEventListener('click', event => {
-  console.log(event);
   const mouse = {
     x: event.offsetX,
     y: event.offsetY,

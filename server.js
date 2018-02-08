@@ -35,21 +35,31 @@ const state = {
 
 const width = 800;
 const height = 600;
+const playerSize = 10;
 
 const tickrate = 1/60;
 const playerSpeed = 100;
 const bulletSpeed = 100;
 
 setInterval(() => {
+  // Update bullet position.
   state.bullets.forEach(bullet => {
-    bullet.x -= bullet.xV;
-    bullet.y -= bullet.yV;
+    bullet.x -= bullet.xV * tickrate * bulletSpeed;
+    bullet.y -= bullet.yV * tickrate * bulletSpeed;
     bullet.lifespan -= tickrate;
 
+    // Constrain bullets to play area.
+    if (bullet.x < 0 || bullet.x > width || bullet.y < 0 || bullet.y > height) {
+      bullet.life = 0;
+    }
+
+    // Kill bullet.
     if (bullet.lifespan < 0) {
       state.bullets.splice(state.bullets.indexOf(bullet), 1);
-    };
+    }
   })
+
+
 }, tickrate);
 
 // Everything inside 'connection' is per-player.
@@ -101,9 +111,9 @@ io.on('connection', function(socket) {
     player.x += move.x * tickrate * playerSpeed;
     player.y += move.y * tickrate * playerSpeed;
 
-    // Wrap player around play space.
-    player.x = player.x < 0 ? width : player.x > width ? 0 : player.x;
-    player.y = player.y < 0 ? height : player.y > height ? 0 : player.y;
+    // Lock player in play space.
+    player.x = player.x < playerSize ? playerSize : player.x > width - playerSize ? width - playerSize : player.x;
+    player.y = player.y < playerSize ? playerSize : player.y > height - playerSize ? height - playerSize : player.y;
   });
 
   socket.on('mouse', data => {
