@@ -44,22 +44,38 @@ const bulletSpeed = 100;
 setInterval(() => {
   // Update bullet position.
   state.bullets.forEach(bullet => {
-    bullet.x -= bullet.xV * tickrate * bulletSpeed;
-    bullet.y -= bullet.yV * tickrate * bulletSpeed;
-    bullet.lifespan -= tickrate;
+    bullet.x -= bullet.xV;
+    bullet.y -= bullet.yV;
+    bullet.life -= tickrate;
+    bullet.life = _.clamp(bullet.life, 0, 10);
 
     // Constrain bullets to play area.
     if (bullet.x < 0 || bullet.x > width || bullet.y < 0 || bullet.y > height) {
       bullet.life = 0;
     }
 
-    // Kill bullet.
-    if (bullet.lifespan < 0) {
+    // Collision detection with players.
+    const bulletPos = Victor.fromObject(bullet);
+    state.players.forEach(player => {
+      if (player.id === bullet.owner.id || bullet.life == 0) {
+        return;
+      }
+      // Player pos should always be a Victor object already.
+      const playerPos = Victor.fromObject(player);
+
+      const distance = playerPos.distanceSq(bulletPos);
+      if (distance < playerSize) {
+        bullet.life = 0;
+        player.health -= 10;
+        player.health = _.clamp(player.health, 0, 100);
+      }
+    });
+
+    // Kill bullets.
+    if (bullet.life == 0) {
       state.bullets.splice(state.bullets.indexOf(bullet), 1);
     }
   })
-
-
 }, tickrate);
 
 // Everything inside 'connection' is per-player.
@@ -72,7 +88,8 @@ io.on('connection', function(socket) {
       id: socket.id,
       x: _.random(0, width),
       y: _.random(0, height),
-      fillStyle: randomcolor()
+      fillStyle: randomcolor(),
+      health: 100,
     };
     state.players.push(player);
   });
@@ -122,13 +139,16 @@ io.on('connection', function(socket) {
     // get normalised vector
     const bulletVec = playerPos.subtract(clickPos).normalize();
     // create a bullet, update its position in the movement loop
-    state.bullets.push({
+    const bullet = {
       x: player.x,
       y: player.y,
-      xV: bulletVec.x,
-      yV: bulletVec.y,
-      lifespan: 10,
-    })
+      xV: bulletVec.x * tickrate * bulletSpeed,
+      yV: bulletVec.y * tickrate * bulletSpeed,
+      life: 10,
+      owner: player,
+    };
+    bullet.stepDistance = Victor.fromObject(bullet).length();
+    state.bullets.push(bullet);
   });
 });
 
