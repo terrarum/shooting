@@ -61,6 +61,7 @@ setInterval(function() {
 socket.on('state', state => {
   context.clearRect(0, 0, 800, 600);
 
+  // Draw bullets.
   state.bullets.forEach(bullet => {
     context.fillStyle = 'black';
     context.beginPath();
@@ -72,8 +73,9 @@ socket.on('state', state => {
     // Draw player.
     context.fillStyle = player.fillStyle;
     context.beginPath();
-    context.arc(player.x + 0.5, player.y + 0.5, 10, 0, 2 * Math.PI);
+    context.arc(player.x, player.y, 10, 0, 2 * Math.PI);
     context.fill();
+
     // Draw health bar.
     let healthWidth = player.health / 100 * 30;
     context.fillRect(player.x - 15, player.y - 20, healthWidth, 4);

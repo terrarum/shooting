@@ -38,41 +38,39 @@ const height = 600;
 const playerSize = 10;
 
 const tickrate = 1/60;
-const playerSpeed = 100;
-const bulletSpeed = 100;
+const playerSpeed = 150;
+const bulletSpeed = 50;
 
 setInterval(() => {
   // Update bullet position.
   state.bullets.forEach(bullet => {
     bullet.x -= bullet.xV;
     bullet.y -= bullet.yV;
-    bullet.life -= tickrate;
-    bullet.life = _.clamp(bullet.life, 0, 10);
 
     // Constrain bullets to play area.
     if (bullet.x < 0 || bullet.x > width || bullet.y < 0 || bullet.y > height) {
-      bullet.life = 0;
+      bullet.active = false;
     }
 
     // Collision detection with players.
     const bulletPos = Victor.fromObject(bullet);
     state.players.forEach(player => {
-      if (player.id === bullet.owner.id || bullet.life == 0) {
+      if (player.id === bullet.owner.id || !bullet.active) {
         return;
       }
       // Player pos should always be a Victor object already.
       const playerPos = Victor.fromObject(player);
 
-      const distance = playerPos.distanceSq(bulletPos);
-      if (distance < playerSize) {
-        bullet.life = 0;
+      const distance = playerPos.distance(bulletPos);
+      if (distance <= playerSize) {
+        bullet.active = false;
         player.health -= 10;
         player.health = _.clamp(player.health, 0, 100);
       }
     });
 
     // Kill bullets.
-    if (bullet.life == 0) {
+    if (!bullet.active) {
       state.bullets.splice(state.bullets.indexOf(bullet), 1);
     }
   })
@@ -144,7 +142,7 @@ io.on('connection', function(socket) {
       y: player.y,
       xV: bulletVec.x * tickrate * bulletSpeed,
       yV: bulletVec.y * tickrate * bulletSpeed,
-      life: 10,
+      active: true,
       owner: player,
     };
     bullet.stepDistance = Victor.fromObject(bullet).length();
