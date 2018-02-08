@@ -31,6 +31,7 @@ server.listen(port, function() {
 const state = {
   players: [],
   bullets: [],
+  leaderboard: [],
 };
 
 const width = 800;
@@ -40,6 +41,14 @@ const playerSize = 10;
 const tickrate = 1/60;
 const playerSpeed = 150;
 const bulletSpeed = 50;
+
+const updateLeaderboard = function updateLeaderboard(player) {
+  state.leaderboard.forEach(leader => {
+    if (leader.id === player.id) {
+      leader.kills += 1;
+    }
+  })
+};
 
 setInterval(() => {
   // Update bullet position.
@@ -66,6 +75,10 @@ setInterval(() => {
         bullet.active = false;
         player.health -= 10;
         player.health = _.clamp(player.health, 0, 100);
+
+        if (player.health === 0) {
+          updateLeaderboard(bullet.owner);
+        }
       }
     });
 
@@ -98,6 +111,10 @@ io.on('connection', function(socket) {
       health: 100,
     };
     state.players.push(player);
+    state.leaderboard.push({
+      id: player.id,
+      kills: 0,
+    })
   });
 
   // Remove player if they leave.

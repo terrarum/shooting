@@ -59,6 +59,7 @@ setInterval(function() {
 }, 1000 / 60);
 
 socket.on('state', state => {
+  const leaderboardEl = document.querySelector('.js-leaderboard');
   context.clearRect(0, 0, 800, 600);
 
   // Draw bullets.
@@ -84,4 +85,12 @@ socket.on('state', state => {
       context.stroke();
     }
   });
+
+  leaderboardEl.innerHTML = '';
+  state.leaderboard = state.leaderboard.sort((a, b) => {
+    return a.kills < b.kills;
+  });
+  state.leaderboard.forEach(leader => {
+    leaderboardEl.innerHTML += `${leader.id} - ${leader.kills}<br>`;
+  })
 });
