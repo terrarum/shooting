@@ -1,6 +1,12 @@
-var socket = io();
+const socket = io();
 
-var movement = {
+const canvas = document.getElementById('canvas');
+canvas.width = 800;
+canvas.height = 600;
+
+const context = canvas.getContext('2d');
+
+const movement = {
   up: false,
   down: false,
   left: false,
@@ -38,10 +44,11 @@ document.addEventListener('keyup', event => {
       break;
   }
 });
-document.addEventListener('click', event => {
+canvas.addEventListener('click', event => {
+  console.log(event);
   const mouse = {
-    x: event.x,
-    y: event.y,
+    x: event.offsetX,
+    y: event.offsetY,
   };
   socket.emit('mouse', mouse);
 });
@@ -51,12 +58,6 @@ socket.emit('new player');
 setInterval(function() {
   socket.emit('loop', movement);
 }, 1000 / 60);
-
-const canvas = document.getElementById('canvas');
-canvas.width = 800;
-canvas.height = 600;
-
-const context = canvas.getContext('2d');
 
 socket.on('state', state => {
   context.clearRect(0, 0, 800, 600);

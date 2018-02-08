@@ -44,9 +44,9 @@ setInterval(() => {
   state.bullets.forEach(bullet => {
     bullet.x -= bullet.xV;
     bullet.y -= bullet.yV;
-    bullet.life -= tickrate;
+    bullet.lifespan -= tickrate;
 
-    if (bullet.life < 0) {
+    if (bullet.lifespan < 0) {
       state.bullets.splice(state.bullets.indexOf(bullet), 1);
     };
   })
@@ -117,7 +117,7 @@ io.on('connection', function(socket) {
       y: player.y,
       xV: bulletVec.x,
       yV: bulletVec.y,
-      life: 10,
+      lifespan: 10,
     })
   });
 });
