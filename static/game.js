@@ -76,10 +76,12 @@ socket.on('state', state => {
     context.arc(player.x, player.y, 10, 0, 2 * Math.PI);
     context.fill();
 
-    // Draw health bar.
-    let healthWidth = player.health / 100 * 30;
-    context.fillRect(player.x - 15, player.y - 20, healthWidth, 4);
-    context.rect(player.x - 15, player.y - 20, 30, 4);
-    context.stroke();
+    if (socket.id === player.id) {
+      // Draw health bar.
+      let healthWidth = player.health / 100 * 30;
+      context.fillRect(player.x - 15, player.y - 20, healthWidth, 4);
+      context.rect(player.x - 15, player.y - 20, 30, 4);
+      context.stroke();
+    }
   });
 });

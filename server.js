@@ -73,7 +73,15 @@ setInterval(() => {
     if (!bullet.active) {
       state.bullets.splice(state.bullets.indexOf(bullet), 1);
     }
-  })
+  });
+
+  state.players.forEach(player => {
+    if (player.health <= 0) {
+      player.health = 100;
+      player.x = _.random(0, width);
+      player.y = _.random(0, height);
+    }
+  });
 }, tickrate);
 
 // Everything inside 'connection' is per-player.
