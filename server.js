@@ -32,7 +32,9 @@ const state = {
   bullets: [],
 };
 
-const speed = 100;
+const tickrate = 1/60;
+const playerSpeed = 100;
+const bulletSpeed = 100;
 
 // Everything inside 'connection' is per-player.
 io.on('connection', function(socket) {
@@ -56,39 +58,40 @@ io.on('connection', function(socket) {
     }
   });
 
-  socket.on('movement', data => {
+  socket.on('loop', data => {
     if (!player) return;
     let x = 0;
     let y = 0;
     if (data.left) {
-      x = -speed;
+      x = -1;
     }
     if (data.right) {
-      x = speed;
+      x = 1;
     }
     if (data.up) {
-      y = -speed;
+      y = -1;
     }
     if (data.down) {
-      y = speed;
+      y = 1;
     }
 
     let move = new Victor(x, y);
 
-    if (move.x === 0 && move.y === 0) {
-      player.x += move.x;
-      player.y += move.y;
-    }
-    else {
+    if (!(move.x === 0 && move.y === 0)) {
       move = move.normalize();
     }
 
-    player.x += move.x * 0.016 * speed;
-    player.y += move.y * 0.016 * speed;
+    player.x += move.x * tickrate * playerSpeed;
+    player.y += move.y * tickrate * playerSpeed;
   });
 
   socket.on('mouse', data => {
-    console.log(data);
+    const playerPos = Victor.fromObject(player);
+    const clickPos = Victor.fromObject(data);
+    // get normalised vector
+    const bulletVec = playerPos.subtract(clickPos).normalize();
+    // create a bullet, update its position in the movement loop
+    console.log(bulletVec);
   });
 });
 

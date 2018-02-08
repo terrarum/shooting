@@ -49,7 +49,7 @@ document.addEventListener('click', event => {
 socket.emit('new player');
 
 setInterval(function() {
-  socket.emit('movement', movement);
+  socket.emit('loop', movement);
 }, 1000 / 60);
 
 const canvas = document.getElementById('canvas');
