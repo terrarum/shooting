@@ -1,14 +1,15 @@
 // Dependencies
-var express = require('express');
-var http = require('http');
-var path = require('path');
-var socketIO = require('socket.io');
-var app = express();
-var server = http.Server(app);
-var io = socketIO(server);
+const express = require('express');
+const _ = require('lodash');
+const http = require('http');
+const path = require('path');
+const socketIO = require('socket.io');
+const app = express();
+const server = http.Server(app);
+const io = socketIO(server);
 
-var randomcolor = require('randomcolor');
-var Victor = require('victor');
+const randomcolor = require('randomcolor');
+const Victor = require('victor');
 
 
 const port = 5000;
@@ -32,6 +33,9 @@ const state = {
   bullets: [],
 };
 
+const width = 800;
+const height = 600;
+
 const tickrate = 1/60;
 const playerSpeed = 100;
 const bulletSpeed = 100;
@@ -44,8 +48,8 @@ io.on('connection', function(socket) {
   socket.on('new player', () => {
     player = {
       id: socket.id,
-      x: 300,
-      y: 300,
+      x: _.random(0, width),
+      y: _.random(0, height),
       fillStyle: randomcolor()
     };
     state.players.push(player);
@@ -81,8 +85,13 @@ io.on('connection', function(socket) {
       move = move.normalize();
     }
 
+    // Update player position.
     player.x += move.x * tickrate * playerSpeed;
     player.y += move.y * tickrate * playerSpeed;
+
+    // Wrap player around play space.
+    player.x = player.x < 0 ? width : player.x > width ? 0 : player.x;
+    player.y = player.y < 0 ? height : player.y > height ? 0 : player.y;
   });
 
   socket.on('mouse', data => {

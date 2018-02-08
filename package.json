@@ -5,6 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.16.2",
+    "lodash": "^4.17.5",
     "randomcolor": "^0.5.3",
     "socket.io": "^2.0.4",
     "victor": "^1.1.0"
