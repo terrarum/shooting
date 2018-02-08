@@ -61,18 +61,17 @@ const context = canvas.getContext('2d');
 socket.on('state', state => {
   context.clearRect(0, 0, 800, 600);
 
+  state.bullets.forEach(bullet => {
+    context.fillStyle = 'black';
+    context.beginPath();
+    context.arc(bullet.x, bullet.y, 2, 0, 2 * Math.PI);
+    context.fill();
+  });
+
   state.players.forEach(player => {
     context.fillStyle = player.fillStyle;
     context.beginPath();
     context.arc(player.x, player.y, 10, 0, 2 * Math.PI);
     context.fill();
   });
-
-  state.bullets.forEach(bullet => {
-    context.fillStyle = black;
-    context.beginPath();
-    context.arc(bullet.x, bullet.y, 2, 0, 2 * Math.PI);
-    context.fill();
-  });
-
 });

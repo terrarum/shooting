@@ -40,6 +40,18 @@ const tickrate = 1/60;
 const playerSpeed = 100;
 const bulletSpeed = 100;
 
+setInterval(() => {
+  state.bullets.forEach(bullet => {
+    bullet.x -= bullet.xV;
+    bullet.y -= bullet.yV;
+    bullet.life -= tickrate;
+
+    if (bullet.life < 0) {
+      state.bullets.splice(state.bullets.indexOf(bullet), 1);
+    };
+  })
+}, tickrate);
+
 // Everything inside 'connection' is per-player.
 io.on('connection', function(socket) {
   let player = null;
@@ -100,7 +112,13 @@ io.on('connection', function(socket) {
     // get normalised vector
     const bulletVec = playerPos.subtract(clickPos).normalize();
     // create a bullet, update its position in the movement loop
-    console.log(bulletVec);
+    state.bullets.push({
+      x: player.x,
+      y: player.y,
+      xV: bulletVec.x,
+      yV: bulletVec.y,
+      life: 10,
+    })
   });
 });
 
