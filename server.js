@@ -11,7 +11,7 @@ const io = socketIO(server);
 const randomcolor = require('randomcolor');
 const Victor = require('victor');
 
-const port = process.env.NODE_ENV === 'production' ? 80 : 5000;
+const port = process.env.NODE_ENV === 'production' ? process.env.PORT : 5000;
 
 app.set('port', port);
 app.use('/static', express.static(__dirname + '/static'));
