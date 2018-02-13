@@ -11,30 +11,33 @@
   <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-<canvas id="canvas"></canvas>
+  <canvas id="canvas"></canvas>
+
+
+  <div class="js-leaderboard"></div>
+  <table>
+    <tr>
+      <td>LEFT</td>
+      <td>A</td>
+    </tr>
+    <tr>
+      <td>RIGHT</td>
+      <td>D</td>
+    </tr>
+    <tr>
+      <td>UP</td>
+      <td>W</td>
+    </tr>
+    <tr>
+      <td>DOWN</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <td>FIRE</td>
+      <td>LEFT-CLICK</td>
+    </tr>
+  </table>
+
+  <script src="/static/game.js"></script>
 </body>
-<script src="/static/game.js"></script>
-<div class="js-leaderboard"></div>
-<table>
-  <tr>
-    <td>LEFT</td>
-    <td>A</td>
-  </tr>
-  <tr>
-    <td>RIGHT</td>
-    <td>D</td>
-  </tr>
-  <tr>
-    <td>UP</td>
-    <td>W</td>
-  </tr>
-  <tr>
-    <td>DOWN</td>
-    <td>S</td>
-  </tr>
-  <tr>
-    <td>FIRE</td>
-    <td>LEFT-CLICK</td>
-  </tr>
-</table>
 </html>

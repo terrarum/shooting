@@ -1,5 +1,6 @@
 const socket = io();
 
+const leaderboardEl = document.querySelector('.js-leaderboard');
 const canvas = document.getElementById('canvas');
 canvas.width = 800;
 canvas.height = 600;
@@ -54,12 +55,21 @@ canvas.addEventListener('click', event => {
 
 socket.emit('new player');
 
-setInterval(function() {
+setInterval(function () {
   socket.emit('loop', movement);
 }, 1000 / 60);
 
-socket.on('state', state => {
-  const leaderboardEl = document.querySelector('.js-leaderboard');
+let state = {
+  bullets: [],
+  players: [],
+  leaderboard: []
+};
+
+socket.on('state', newState => {
+  state = newState;
+});
+
+const render = function render() {
   context.clearRect(0, 0, 800, 600);
 
   // Draw bullets.
@@ -90,7 +100,12 @@ socket.on('state', state => {
   state.leaderboard = state.leaderboard.sort((a, b) => {
     return a.kills < b.kills;
   });
+
   state.leaderboard.forEach(leader => {
     leaderboardEl.innerHTML += `${leader.id} - ${leader.kills}<br>`;
-  })
-});
+  });
+
+  requestAnimationFrame(render);
+};
+
+requestAnimationFrame(render);
