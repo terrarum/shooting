@@ -14,7 +14,8 @@ var htmlWebpackOptions = {
   minify: htmlMinifiedOptions,
   hash: true,
   template: 'src/index.html',
-  inject: 'body'
+  inject: 'body',
+  excludeChunks: ['server'],
 };
 
 var styleLoaders = [
@@ -30,9 +31,12 @@ if (production) {
 }
 
 module.exports = {
-  entry: './src/index.js',
+  entry: {
+    client: './src/client/index.js',
+    server: './src/server/index.js',
+  },
   output: {
-    filename: 'bundle.js',
+    filename: '[name].js',
     path: path.resolve(__dirname, 'dist')
   },
   plugins: [
